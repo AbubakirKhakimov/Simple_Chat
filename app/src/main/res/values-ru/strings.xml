@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simple chat</string>
+    <string name="open">Открытый</string>
+    <string name="close">Закрытый</string>
+    <string name="languagesListName">Язык</string>
+    <string name="englishLanguage">Английский</string>
+    <string name="russianLanguage">Русский</string>
+    <string name="uzbek">Узбекский</string>
+    <string name="sign_in">Войти</string>
+    <string name="please_enter_your_phone_number">Пожалуйста введите ваш номер телефона</string>
+    <string name="next">Следующий</string>
+    <string name="error">Ошибка!</string>
+    <string name="successfulAuthorized">Успешно авторизованы!</string>
+    <string name="validPhoneNumber">Пожалуйста, введите действующий телефонный номер!</string>
+    <string name="phone_check">Проверка номера телефона</string>
+    <string name="you_will_receive_an_sms_at_the_number">На следующий номер придет SMS. Введите сюда код, полученный в СМС</string>
+    <string name="invalidCode">Неверный код, попробуйте еще раз!</string>
+    <string name="get_user_information">Получить информацию о пользователе</string>
+    <string name="please_enter_your_first_and_last_name">Пожалуйста, введите свое имя и фамилию. Эта информация видна пользователям в чатах, которые вы добавили.</string>
+    <string name="first_name_necessarily">Имя (обязательно)</string>
+    <string name="last_name_not_necessary">Фамилия (не обязательно)</string>
+    <string name="write_your_first_name">Пожалуйста, напишите свое имя!</string>
+    <string name="choose_an_image_for_your_profile">Выберите изображение для своего профиля</string>
+    <string name="the_image_you_add_will_be_visible_to_users_in_the_chats_you_add">Добавленное вами изображение будет видно пользователям в добавленных вами чатах.</string>
+    <string name="choose_image">Выбрать изображение</string>
+    <string name="go_chat">Перейти в чат</string>
+    <string name="data_seved">Данные сохранены!</string>
+    <string name="profile_settings">Настройки профиля</string>
+    <string name="change_language">Изменить язык</string>
+    <string name="sign_out">Выход</string>
+    <string name="do_you_really_want_to_leave">Вы действительно хотите выйти?</string>
+    <string name="no">Нет</string>
+    <string name="yes">Да</string>
+    <string name="message">Сообщение</string>
+    <string name="please_write_something">Пожалуйста, напишите что-нибудь!</string>
+    <string name="changes_saved">Изменения сохранены!</string>
+    <string name="enter_the_phone_number">Введите номер телефона</string>
+    <string name="check">Добавить чат</string>
+    <string name="enter_a_phone_number">Пожалуйста, введите номер телефона!</string>
+    <string name="is_your_phone_number">Это ваш номер телефона!</string>
+    <string name="this_number_is_in_your_chat_list">Этот номер есть в вашем списке чатов!</string>
+    <string name="number_is_not_registered">Этот номер не зарегистрирован!</string>
+    <string name="advice_add_chat">У вас еще нет чатов. Чтобы добавить новый чат, нажмите кнопку (+) ниже и введите номер телефона вашего собеседника.</string>
+</resources>

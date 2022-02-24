@@ -1,0 +1,45 @@
+<resources>
+    <string name="app_name" translatable="false">Simple chat</string>
+    <string name="title_activity_maps" translatable="false">MapsActivity</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="languagesListName">Language</string>
+    <string name="englishLanguage">English</string>
+    <string name="russianLanguage">Russian</string>
+    <string name="uzbek">Uzbek</string>
+    <string name="sign_in">Sign In</string>
+    <string name="please_enter_your_phone_number">Please enter your phone number</string>
+    <string name="next">Next</string>
+    <string name="error">Error!</string>
+    <string name="successfulAuthorized">Successful authorized!</string>
+    <string name="validPhoneNumber">Please enter a valid phone number!</string>
+    <string name="phone_check">Phone number verification</string>
+    <string name="you_will_receive_an_sms_at_the_number">An SMS will be sent to the next number. Enter the code received via SMS here</string>
+    <string name="invalidCode">Invalid code, please try again!</string>
+    <string name="get_user_information">Get user information</string>
+    <string name="please_enter_your_first_and_last_name">Please enter your first and last name. This information is visible to users in the chats you have added.</string>
+    <string name="first_name_necessarily">First name (necessarily)</string>
+    <string name="last_name_not_necessary">Last name (not necessary)</string>
+    <string name="write_your_first_name">Please write your first name!</string>
+    <string name="choose_an_image_for_your_profile">Choose an image for your profile</string>
+    <string name="the_image_you_add_will_be_visible_to_users_in_the_chats_you_add">The image you add will be visible to users in the chats you add.</string>
+    <string name="choose_image">Choose image</string>
+    <string name="go_chat">Go chat</string>
+    <string name="data_seved">Data saved!</string>
+    <string name="profile_settings">Profile settings</string>
+    <string name="change_language">Change language</string>
+    <string name="sign_out">Sign out</string>
+    <string name="do_you_really_want_to_leave">Do you really want to leave?</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="message">Message</string>
+    <string name="please_write_something">Please write something!</string>
+    <string name="changes_saved">Changes saved!</string>
+    <string name="enter_the_phone_number">Enter the phone number</string>
+    <string name="check">Add chat</string>
+    <string name="enter_a_phone_number">Please enter a phone number!</string>
+    <string name="is_your_phone_number">This is your phone number!</string>
+    <string name="this_number_is_in_your_chat_list">This number is in your chat list!</string>
+    <string name="number_is_not_registered">This number is not registered!</string>
+    <string name="advice_add_chat">You don\'t have any chats yet. To add a new chat, click the (+) button below and enter the phone number of your interlocutor.</string>
+</resources>

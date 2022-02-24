@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_activity_navigation"
+    app:startDestination="@id/chatsSelectFragment">
+
+    <fragment
+        android:id="@+id/chatsSelectFragment"
+        android:name="com.x.a_technologies.simple_chat.fragments.ChatsSelectFragment"
+        android:label="fragment_chats_select"
+        tools:layout="@layout/fragment_chats_select" >
+        <action
+            android:id="@+id/action_chatsSelectFragment_to_chatFragment"
+            app:destination="@id/chatFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_chatsSelectFragment_to_profileSettingsFragment"
+            app:destination="@id/profileSettingsFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_chatsSelectFragment_to_changeLanguageFragment"
+            app:destination="@id/changeLanguageFragment" />
+        <action
+            android:id="@+id/action_chatsSelectFragment_to_addChatFragment"
+            app:destination="@id/addChatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.x.a_technologies.simple_chat.fragments.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" />
+    <fragment
+        android:id="@+id/changeLanguageFragment"
+        android:name="com.x.a_technologies.simple_chat.fragments.ChangeLanguageFragment"
+        android:label="fragment_change_language"
+        tools:layout="@layout/fragment_change_language" />
+    <fragment
+        android:id="@+id/profileSettingsFragment"
+        android:name="com.x.a_technologies.simple_chat.fragments.ProfileSettingsFragment"
+        android:label="fragment_profile_settings"
+        tools:layout="@layout/fragment_profile_settings" />
+    <fragment
+        android:id="@+id/addChatFragment"
+        android:name="com.x.a_technologies.simple_chat.fragments.AddChatFragment"
+        android:label="fragment_add_chat"
+        tools:layout="@layout/fragment_add_chat" />
+</navigation>

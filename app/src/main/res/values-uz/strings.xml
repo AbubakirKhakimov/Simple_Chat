@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Simple chat</string>
+    <string name="open">Ochiq</string>
+    <string name="close">Yopiq</string>
+    <string name="languagesListName">Til</string>
+    <string name="englishLanguage">Ingliz</string>
+    <string name="russianLanguage">Rus</string>
+    <string name="uzbek">O\'zbek</string>
+    <string name="sign_in">Tizimga kirish</string>
+    <string name="please_enter_your_phone_number">Iltimos, telefon raqamingizni kiriting</string>
+    <string name="next">Keyingi</string>
+    <string name="error">Xatolik!</string>
+    <string name="successfulAuthorized">Muvaffaqiyatli avtorizatsiya qilindi!</string>
+    <string name="validPhoneNumber">Iltimos, yaroqli telefon raqamini kiriting!</string>
+    <string name="phone_check">Telefon raqamini tekshirish</string>
+    <string name="you_will_receive_an_sms_at_the_number">Quyidagi raqamga SMS keladi. SMS da kelgan kodni bu yerga kiriting</string>
+    <string name="invalidCode">Kod noto\'g\'ri, qayta urinib ko\'ring!</string>
+    <string name="get_user_information">Foydalanuvchi ma\'lumotlarini olish</string>
+    <string name="please_enter_your_first_and_last_name">Iltimos, ismingiz va familiyangizni kiriting. Bu maʼlumotlar siz qoʻshgan chatlardagi foydalanuvchilarga koʻrinadi.</string>
+    <string name="first_name_necessarily">Ism (majburiy)</string>
+    <string name="last_name_not_necessary">Familiya (majburiy emas)</string>
+    <string name="write_your_first_name">Iltimos, ismingizni yozing!</string>
+    <string name="choose_an_image_for_your_profile">Profilingiz uchun rasm tanlang</string>
+    <string name="the_image_you_add_will_be_visible_to_users_in_the_chats_you_add">Siz qo\'shgan rasm siz qo\'shgan chatlardagi foydalanuvchilarga ko\'rinadi.</string>
+    <string name="choose_image">Rasm tanlash</string>
+    <string name="go_chat">Chatga o\'tish</string>
+    <string name="data_seved">Maʼlumotlar saqlandi!</string>
+    <string name="profile_settings">Profil sozlamalari</string>
+    <string name="change_language">Tilni o\'zgartirish</string>
+    <string name="sign_out">Chiqish</string>
+    <string name="do_you_really_want_to_leave">Haqiqatdan ham chiqishni xohlaysizmi?</string>
+    <string name="no">Yo\'q</string>
+    <string name="yes">Ha</string>
+    <string name="message">Xabar</string>
+    <string name="please_write_something">Iltimos, biror narsa yozing!</string>
+    <string name="changes_saved">Oʻzgarishlar saqlandi!</string>
+    <string name="enter_the_phone_number">Telefon raqamini kiriting</string>
+    <string name="check">Chat qo\'shish</string>
+    <string name="enter_a_phone_number">Iltimos, telefon raqamini kiriting!</string>
+    <string name="is_your_phone_number">Bu sizning telefon raqamingiz!</string>
+    <string name="this_number_is_in_your_chat_list">Bu raqam chatlar roʻyxatida bor!</string>
+    <string name="number_is_not_registered">Bu raqam ro\'yxatdan o\'tmagan!</string>
+    <string name="advice_add_chat">Xozircha sizda chatlar yo\'q. Yangi chat qo\'shish uchun pastdagi ( + ) tugmasini bosing va suxbatdoshingizni telefon raqamini kiriting.</string>
+</resources>
