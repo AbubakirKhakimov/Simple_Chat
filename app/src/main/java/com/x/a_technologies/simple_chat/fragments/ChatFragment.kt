@@ -1,12 +1,12 @@
 package com.x.a_technologies.simple_chat.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.firebase.database.DataSnapshot
@@ -15,23 +15,35 @@ import com.google.firebase.database.ValueEventListener
 import com.x.a_technologies.simple_chat.R
 import com.x.a_technologies.simple_chat.adapters.ChatAdapter
 import com.x.a_technologies.simple_chat.databinding.FragmentChatBinding
-import com.x.a_technologies.simple_chat.datas.Datas
-import com.x.a_technologies.simple_chat.models.Keys
+import com.x.a_technologies.simple_chat.database.DatabaseRef
+import com.x.a_technologies.simple_chat.database.Keys
+import com.x.a_technologies.simple_chat.models.ChatInfo
+import com.x.a_technologies.simple_chat.models.MainViewModel
 import com.x.a_technologies.simple_chat.models.MemberInfo
 import com.x.a_technologies.simple_chat.models.Message
+import hani.momanii.supernova_emoji_library.Actions.EmojIconActions
 import java.util.*
 import kotlin.collections.ArrayList
 
 class ChatFragment : Fragment() {
 
     lateinit var binding: FragmentChatBinding
-    lateinit var adapter: ChatAdapter
+    lateinit var chatAdapter: ChatAdapter
+    lateinit var viewModel: MainViewModel
     private var trackerEventListener: ValueEventListener? = null
-    var messageList = ArrayList<Message>()
 
-    var position:Int? = null
+    lateinit var currentChatInfo: ChatInfo
     lateinit var otherMemberInfo: MemberInfo
-    lateinit var currentChatId:String
+    var messagesList = ArrayList<Message>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        initObservers()
+
+        currentChatInfo = arguments?.getSerializable("selectedChatInfo") as ChatInfo
+        otherMemberInfo = getOtherUser(currentChatInfo.membersInfoList)!!
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,20 +57,11 @@ class ChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        position = arguments?.getInt("clickPosition")
-        currentChatId = Datas.chatInfoList[position!!].chatId
-        otherMemberInfo = getOtherUser(Datas.chatInfoList[position!!].membersInfoList)!!
-
-        binding.name.text = "${otherMemberInfo.firstName} ${otherMemberInfo.lastName}"
-        if (otherMemberInfo.imageUrl != null){
-            Glide.with(requireActivity()).load(otherMemberInfo.imageUrl).into(binding.profileImage)
-        }
-
-        adapter = ChatAdapter(messageList)
-        binding.recyclerView.adapter = adapter
+        initEmoji()
+        updateUI()
 
         if (trackerEventListener == null) {
-            chatTracker()
+            initChatTracker()
         }
 
         binding.sendButton.setOnClickListener {
@@ -75,59 +78,80 @@ class ChatFragment : Fragment() {
 
     }
 
+    private fun initChatTracker(){
+        binding.progressBar.visibility = View.VISIBLE
+        trackerEventListener = viewModel.initChatTracker(currentChatInfo.chatId)
+    }
+
+    private fun initObservers() {
+        viewModel.chatTracker.observe(this){
+            messagesList.apply {
+                clear()
+                addAll(it)
+            }
+
+            chatAdapter.notifyDataSetChanged()
+            binding.recyclerView.scrollToPosition(messagesList.size-1)
+            binding.progressBar.visibility = View.GONE
+        }
+
+        viewModel.successfulWrited.observe(this){
+
+        }
+
+        viewModel.errorData.observe(this){
+            Toast.makeText(requireActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+            binding.progressBar.visibility = View.GONE
+        }
+    }
+
+    private fun updateUI(){
+        binding.name.text = "${otherMemberInfo.firstName} ${otherMemberInfo.lastName}"
+        if (otherMemberInfo.imageUrl != null){
+            Glide.with(requireActivity()).load(otherMemberInfo.imageUrl).into(binding.profileImage)
+        }
+
+        chatAdapter = ChatAdapter(messagesList)
+        binding.recyclerView.adapter = chatAdapter
+    }
+
     private fun sendMessage() {
-        val messageId = Datas.refChat.push().key!!
+        val messageId = DatabaseRef.chatsRef.push().key!!
 
         val message = Message(
             messageId,
-            Datas.currentUser.number,
-            binding.message.text.toString(), Date().time
+            DatabaseRef.currentUser.number,
+            binding.message.text.toString().trim(),
+            Date().time
         )
 
         val childUpdates = mapOf<String, Any>(
-            "${Keys.CHATS_INFO_KEY}/${currentChatId}/lastMessage" to message,
-            "${Keys.MESSAGES_KEY}/${currentChatId}/$messageId" to message
+            "${Keys.CHATS_INFO_KEY}/${currentChatInfo.chatId}/lastMessage" to message,
+            "${Keys.MESSAGES_KEY}/${currentChatInfo.chatId}/$messageId" to message
         )
-        Datas.refChat.updateChildren(childUpdates)
 
+        viewModel.writeInUpdateChildren(DatabaseRef.chatsRef, childUpdates)
         binding.message.text.clear()
-    }
-
-    private fun chatTracker(){
-        binding.progressBar.visibility = View.VISIBLE
-
-        trackerEventListener = Datas.refChat.child(Keys.MESSAGES_KEY).child(currentChatId)
-            .addValueEventListener(object :ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    messageList.clear()
-                    for (it in snapshot.children){
-                        messageList.add(it.getValue(Message::class.java)!!)
-                    }
-
-                    adapter.notifyDataSetChanged()
-                    binding.recyclerView.scrollToPosition(messageList.size-1)
-                    binding.progressBar.visibility = View.GONE
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    binding.progressBar.visibility = View.GONE
-                }
-            })
     }
 
     private fun getOtherUser(usersList:List<MemberInfo>): MemberInfo?{
         for (user in usersList){
-            if (user.number != Datas.currentUser.number){
+            if (user.number != DatabaseRef.currentUser.number){
                 return user
             }
         }
         return null
     }
 
+    private fun initEmoji(){
+        val emojIcon = EmojIconActions(requireActivity(), binding.root, binding.message, binding.emojiButton)
+        emojIcon.ShowEmojIcon()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         if (trackerEventListener != null) {
-            Datas.refChat.child(Keys.MESSAGES_KEY).child(currentChatId)
+            DatabaseRef.chatsRef.child(Keys.MESSAGES_KEY).child(currentChatInfo.chatId)
                 .removeEventListener(trackerEventListener!!)
         }
     }

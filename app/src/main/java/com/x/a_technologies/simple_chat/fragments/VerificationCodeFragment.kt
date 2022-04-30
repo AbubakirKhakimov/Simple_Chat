@@ -11,6 +11,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
@@ -20,13 +22,27 @@ import com.google.firebase.database.ValueEventListener
 import com.x.a_technologies.simple_chat.R
 import com.x.a_technologies.simple_chat.activities.MainActivity
 import com.x.a_technologies.simple_chat.databinding.FragmentVerificationCodeBinding
-import com.x.a_technologies.simple_chat.datas.Datas
+import com.x.a_technologies.simple_chat.database.DatabaseRef
+import com.x.a_technologies.simple_chat.models.FragmentsCallBackViewModel
+import com.x.a_technologies.simple_chat.models.MainViewModel
 import com.x.a_technologies.simple_chat.models.User
 
 class VerificationCodeFragment : Fragment() {
+
     lateinit var binding: FragmentVerificationCodeBinding
+    lateinit var viewModel: MainViewModel
+    val fragmentsCallBack: FragmentsCallBackViewModel by activityViewModels()
+
     lateinit var verificationId:String
     lateinit var phoneNumber: String
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
+        phoneNumber = arguments?.getString("phoneNumber")!!
+        verificationId = arguments?.getString("verificationId")!!
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,57 +56,65 @@ class VerificationCodeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        phoneNumber = arguments?.getString("phoneNumber")!!
-        verificationId = arguments?.getString("verificationId")!!
+        initObservers()
+
         binding.number.text = phoneNumber
 
         listeners()
 
     }
 
-    fun verification(){
+    private fun initObservers(){
+        viewModel.currentUserData.observe(viewLifecycleOwner){
+            checkUser(it)
+        }
+
+        viewModel.errorData.observe(viewLifecycleOwner){
+            Toast.makeText(requireActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+            isLoading(false)
+        }
+
+        fragmentsCallBack.autoAuthorizedCallBack.observe(viewLifecycleOwner){
+            isLoading(true)
+            closeKeyboard()
+            clearEditText()
+
+            signInWithPhoneAuthCredential(it)
+        }
+    }
+
+    private fun verification(){
         val credential = PhoneAuthProvider.getCredential(verificationId, getCode())
         signInWithPhoneAuthCredential(credential)
     }
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
-        Datas.auth.signInWithCredential(credential).addOnCompleteListener(requireActivity()) { task ->
+        DatabaseRef.auth.signInWithCredential(credential).addOnCompleteListener(requireActivity()) { task ->
             if (task.isSuccessful) {
-                checkUserDatabase()
+                viewModel.getCurrentUser()
             } else {
-                inVisible()
+                isLoading(false)
                 Toast.makeText(requireActivity(), getString(R.string.invalidCode), Toast.LENGTH_SHORT).show()
                 clearEditText()
             }
         }
     }
 
-    private fun checkUserDatabase(){
-        Datas.refUser.child(phoneNumber).addListenerForSingleValueEvent(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                if (snapshot.value == null){
-                    inVisible()
-                    Toast.makeText(requireActivity(), getString(R.string.successfulAuthorized), Toast.LENGTH_SHORT).show()
+    private fun checkUser(currentUser: User?) {
+        Toast.makeText(requireActivity(), getString(R.string.successfulAuthorized), Toast.LENGTH_SHORT).show()
+        isLoading(false)
 
-                    findNavController().navigate(R.id.action_verificationCodeFragment_to_getUserInfoFragment)
+        if (currentUser == null) {
+            findNavController().navigate(R.id.action_verificationCodeFragment_to_getUserInfoFragment)
+        } else {
+            DatabaseRef.currentUser = currentUser
 
-                }else{
-                    Datas.currentUser = snapshot.getValue(User::class.java)!!
-                    inVisible()
-                    Toast.makeText(requireActivity(), getString(R.string.successfulAuthorized), Toast.LENGTH_SHORT).show()
-
-                    startActivity(Intent(requireActivity(), MainActivity::class.java))
-                    requireActivity().finish()
-                }
-            }
-            override fun onCancelled(error: DatabaseError) {
-                inVisible()
-                Toast.makeText(requireActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show()
-            }
-        })
+            startActivity(Intent(requireActivity(), MainActivity::class.java))
+            requireActivity().finish()
+        }
     }
 
-    fun getCode():String{
+    private fun getCode():String{
         var code = ""
         for (i in 0..5){
             code += getEditText(i).text.toString()
@@ -98,7 +122,7 @@ class VerificationCodeFragment : Fragment() {
         return code
     }
 
-    fun clearEditText(){
+    private fun clearEditText(){
         for (i in 0..5){
             val editText = getEditText(i)
             editText.text.clear()
@@ -107,7 +131,7 @@ class VerificationCodeFragment : Fragment() {
         getEditText(0).requestFocus()
     }
 
-    fun editTextController(position: Int, it: String) {
+    private fun editTextController(position: Int, it: String) {
         if (it == "" && position != 0) {
             getEditText(position).clearFocus()
             getEditText(position-1).requestFocus()
@@ -115,16 +139,20 @@ class VerificationCodeFragment : Fragment() {
             getEditText(position).clearFocus()
             getEditText(position+1).requestFocus()
         } else if (position == 5){
-            val inputMethodManager = requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.hideSoftInputFromWindow(getEditText(5).windowToken, 0)
+            closeKeyboard()
             getEditText(5).clearFocus()
-            visible()
 
+            isLoading(true)
             verification()
         }
     }
 
-    fun listeners(){
+    private fun closeKeyboard(){
+        val inputMethodManager = requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(getEditText(5).windowToken, 0)
+    }
+
+    private fun listeners(){
         binding.oneCode.addTextChangedListener {
             editTextController(0, it.toString())
         }
@@ -145,7 +173,7 @@ class VerificationCodeFragment : Fragment() {
         }
     }
 
-    fun getEditText(position:Int): EditText {
+    private fun getEditText(position:Int): EditText {
         when(position){
             0 -> return binding.oneCode
             1 -> return binding.twoCode
@@ -157,12 +185,12 @@ class VerificationCodeFragment : Fragment() {
         return binding.oneCode
     }
 
-    fun visible(){
-        binding.progressBar.visibility = View.VISIBLE
-    }
-
-    fun inVisible(){
-        binding.progressBar.visibility = View.INVISIBLE
+    private fun isLoading(bool: Boolean) {
+        if (bool) {
+            binding.progressBar.visibility = View.VISIBLE
+        } else {
+            binding.progressBar.visibility = View.INVISIBLE
+        }
     }
 
 }

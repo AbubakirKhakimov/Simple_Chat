@@ -1,4 +1,4 @@
-package com.x.a_technologies.simple_chat.models
+package com.x.a_technologies.simple_chat.database
 
 object Keys {
     const val USERS_KEY = "users"

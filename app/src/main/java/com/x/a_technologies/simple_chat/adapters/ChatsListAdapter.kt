@@ -5,17 +5,21 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.x.a_technologies.simple_chat.R
 import com.x.a_technologies.simple_chat.databinding.ChatsListItemLayoutBinding
-import com.x.a_technologies.simple_chat.datas.Datas
+import com.x.a_technologies.simple_chat.database.DatabaseRef
+import com.x.a_technologies.simple_chat.models.ChatInfo
 import com.x.a_technologies.simple_chat.models.MemberInfo
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 interface ChatsListCallBack{
     fun itemClick(position: Int)
 }
 
-class ChatsListAdapter(val context:Context, val chatsListCallBack: ChatsListCallBack):RecyclerView.Adapter<ChatsListAdapter.ItemHolder>() {
+class ChatsListAdapter(val chatsInfoList: ArrayList<ChatInfo>, val context:Context, val chatsListCallBack: ChatsListCallBack)
+    :RecyclerView.Adapter<ChatsListAdapter.ItemHolder>() {
     inner class ItemHolder(val binding: ChatsListItemLayoutBinding):RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
@@ -23,7 +27,7 @@ class ChatsListAdapter(val context:Context, val chatsListCallBack: ChatsListCall
     }
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
-        val item = Datas.chatInfoList[position]
+        val item = chatsInfoList[position]
         val otherUser = getOtherUser(item.membersInfoList)!!
 
         holder.binding.name.text = "${otherUser.firstName} ${otherUser.lastName}"
@@ -42,6 +46,8 @@ class ChatsListAdapter(val context:Context, val chatsListCallBack: ChatsListCall
             }
         if (otherUser.imageUrl != null) {
             Glide.with(context).load(otherUser.imageUrl).into(holder.binding.profileImage)
+        }else{
+            holder.binding.profileImage.setImageResource(R.drawable.user_profile)
         }
 
         holder.binding.linerLayout.setOnClickListener {
@@ -51,20 +57,20 @@ class ChatsListAdapter(val context:Context, val chatsListCallBack: ChatsListCall
     }
 
     override fun getItemCount(): Int {
-        return Datas.chatInfoList.size
+        return chatsInfoList.size
     }
 
-    fun getTime(longTime: Long):String{
+    private fun getTime(longTime: Long):String{
         return SimpleDateFormat("HH:mm").format(Date(longTime))
     }
 
-    fun getDate(longTime: Long):String{
+    private fun getDate(longTime: Long):String{
         return SimpleDateFormat("dd MMM").format(Date(longTime))
     }
 
-    fun getOtherUser(usersList:List<MemberInfo>):MemberInfo?{
+    private fun getOtherUser(usersList:List<MemberInfo>):MemberInfo?{
         for (user in usersList){
-            if (user.number != Datas.currentUser.number){
+            if (user.number != DatabaseRef.currentUser.number){
                 return user
             }
         }

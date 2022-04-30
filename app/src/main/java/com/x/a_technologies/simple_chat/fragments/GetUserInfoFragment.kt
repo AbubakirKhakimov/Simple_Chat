@@ -12,6 +12,7 @@ import com.x.a_technologies.simple_chat.R
 import com.x.a_technologies.simple_chat.databinding.FragmentGetUserInfoBinding
 
 class GetUserInfoFragment : Fragment() {
+
     lateinit var binding: FragmentGetUserInfoBinding
 
     override fun onCreateView(

@@ -6,13 +6,12 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.x.a_technologies.simple_chat.databinding.ChatItemLayoutBinding
-import com.x.a_technologies.simple_chat.datas.Datas
+import com.x.a_technologies.simple_chat.database.DatabaseRef
 import com.x.a_technologies.simple_chat.models.Message
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-class ChatAdapter(val messageList:List<Message>):RecyclerView.Adapter<ChatAdapter.ItemHolder>() {
+class ChatAdapter(val messagesList:List<Message>):RecyclerView.Adapter<ChatAdapter.ItemHolder>() {
 
     inner class ItemHolder(val binding: ChatItemLayoutBinding):RecyclerView.ViewHolder(binding.root)
 
@@ -21,7 +20,7 @@ class ChatAdapter(val messageList:List<Message>):RecyclerView.Adapter<ChatAdapte
     }
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {
-        val item = messageList[position]
+        val item = messagesList[position]
 
         holder.binding.linerLayout.layoutParams = getParams(item)
         holder.binding.message.text = item.massage
@@ -29,12 +28,12 @@ class ChatAdapter(val messageList:List<Message>):RecyclerView.Adapter<ChatAdapte
     }
 
     override fun getItemCount(): Int {
-        return messageList.size
+        return messagesList.size
     }
 
     private fun getParams(item:Message):ViewGroup.LayoutParams{
         val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,FrameLayout.LayoutParams.WRAP_CONTENT)
-        if (item.number == Datas.currentUser.number){
+        if (item.number == DatabaseRef.currentUser.number){
             params.gravity = Gravity.END
             params.marginStart = 200
         }else{

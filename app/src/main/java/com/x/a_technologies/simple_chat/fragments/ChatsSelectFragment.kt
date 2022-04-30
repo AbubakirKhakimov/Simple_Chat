@@ -2,47 +2,45 @@ package com.x.a_technologies.simple_chat.fragments
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.x.a_technologies.simple_chat.R
 import com.x.a_technologies.simple_chat.activities.IntroActivity
 import com.x.a_technologies.simple_chat.adapters.ChatsListAdapter
 import com.x.a_technologies.simple_chat.adapters.ChatsListCallBack
 import com.x.a_technologies.simple_chat.databinding.FragmentChatsSelectBinding
-import com.x.a_technologies.simple_chat.datas.Datas
+import com.x.a_technologies.simple_chat.database.DatabaseRef
 import com.x.a_technologies.simple_chat.models.ChatInfo
-import com.x.a_technologies.simple_chat.models.Keys
+import com.x.a_technologies.simple_chat.database.Keys
+import com.x.a_technologies.simple_chat.models.MainViewModel
 import com.x.a_technologies.simple_chat.models.User
 import de.hdodenhof.circleimageview.CircleImageView
 
 class ChatsSelectFragment : Fragment(), ChatsListCallBack {
 
     lateinit var binding: FragmentChatsSelectBinding
-    lateinit var adapter: ChatsListAdapter
-    lateinit var trackerEventListener: ValueEventListener
+    lateinit var viewModel: MainViewModel
+    lateinit var chatsListAdapter: ChatsListAdapter
+    private var trackerEventListener: ValueEventListener? = null
+
+    val chatsInfoList = ArrayList<ChatInfo>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = FragmentChatsSelectBinding.inflate(layoutInflater)
-        binding.progressBar.visibility = View.VISIBLE
-
-        chatInfoTracker()
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        initObservers()
     }
 
     override fun onCreateView(
@@ -50,14 +48,19 @@ class ChatsSelectFragment : Fragment(), ChatsListCallBack {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
+        binding = FragmentChatsSelectBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = ChatsListAdapter(requireActivity(), this)
-        binding.recyclerView.adapter = adapter
+        if (trackerEventListener == null) {
+            initChatsSelectTracker()
+        }
+
+        chatsListAdapter = ChatsListAdapter(chatsInfoList, requireActivity(), this)
+        binding.recyclerView.adapter = chatsListAdapter
         binding.navDrawerView.itemIconTintList = null
 
         navHeaderLayoutRes()
@@ -87,6 +90,34 @@ class ChatsSelectFragment : Fragment(), ChatsListCallBack {
         }
     }
 
+    private fun initObservers(){
+        viewModel.chatsSelectTracker.observe(this){
+            chatsInfoList.apply {
+                clear()
+                addAll(it)
+            }
+
+            chatsListAdapter.notifyDataSetChanged()
+            binding.progressBar.visibility = View.GONE
+
+            if (chatsInfoList.size == 0){
+                binding.adviceTitle.visibility = View.VISIBLE
+            }else{
+                binding.adviceTitle.visibility = View.GONE
+            }
+        }
+
+        viewModel.errorData.observe(this){
+            Toast.makeText(requireActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+            binding.progressBar.visibility = View.GONE
+        }
+    }
+
+    private fun initChatsSelectTracker(){
+        binding.progressBar.visibility = View.VISIBLE
+        trackerEventListener = viewModel.initChatsSelectTracker()
+    }
+
     private fun openAlertDialog(){
         val alertDialog = AlertDialog.Builder(requireActivity()).create()
         val layout = layoutInflater.inflate(R.layout.sign_out_alert_dialog, null)
@@ -96,9 +127,8 @@ class ChatsSelectFragment : Fragment(), ChatsListCallBack {
         val noButton = layout.findViewById<MaterialButton>(R.id.noButton)
 
         yesButton.setOnClickListener {
-            Datas.chatInfoList.clear()
-            Datas.currentUser = User()
-            Datas.auth.signOut()
+            DatabaseRef.currentUser = User()
+            DatabaseRef.auth.signOut()
 
             startActivity(Intent(requireActivity(), IntroActivity::class.java))
             requireActivity().finish()
@@ -112,44 +142,9 @@ class ChatsSelectFragment : Fragment(), ChatsListCallBack {
         alertDialog.show()
     }
 
-    private fun chatInfoTracker(){
-        trackerEventListener = Datas.refChat.child(Keys.CHATS_INFO_KEY)
-            .addValueEventListener(object :ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                updateRes(snapshot)
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                binding.progressBar.visibility = View.GONE
-            }
-        })
-    }
-
-    fun updateRes(snapshot: DataSnapshot){
-        Datas.refUser.child(Datas.currentUser.number).get().addOnSuccessListener {
-            if (it.value != null) {
-                Datas.currentUser = it.getValue(User::class.java)!!
-
-                Datas.chatInfoList.clear()
-                for (chatId in Datas.currentUser.chatIdList){
-                    val chatInfo = snapshot.child(chatId).getValue(ChatInfo::class.java)!!
-                    Datas.chatInfoList.add(chatInfo)
-                }
-                adapter.notifyDataSetChanged()
-                binding.progressBar.visibility = View.GONE
-
-                if (Datas.chatInfoList.size == 0){
-                    binding.adviceTitle.visibility = View.VISIBLE
-                }else{
-                    binding.adviceTitle.visibility = View.GONE
-                }
-            }
-        }
-    }
-
     override fun itemClick(position: Int) {
         findNavController().navigate(R.id.action_chatsSelectFragment_to_chatFragment, bundleOf(
-            "clickPosition" to position
+            "selectedChatInfo" to chatsInfoList[position]
         ))
     }
 
@@ -159,7 +154,7 @@ class ChatsSelectFragment : Fragment(), ChatsListCallBack {
         val number = headerView.findViewById<TextView>(R.id.phoneNumber)
         val profileImage = headerView.findViewById<CircleImageView>(R.id.profile_image)
 
-        val currentUser = Datas.currentUser
+        val currentUser = DatabaseRef.currentUser
         name.text = "${currentUser.firstName} ${currentUser.lastName}"
         number.text = currentUser.number
         if (currentUser.imageUrl != null) {
@@ -169,7 +164,10 @@ class ChatsSelectFragment : Fragment(), ChatsListCallBack {
 
     override fun onDestroy() {
         super.onDestroy()
-        Datas.refChat.child(Keys.CHATS_INFO_KEY).removeEventListener(trackerEventListener)
+        if (trackerEventListener != null){
+            DatabaseRef.chatsRef.child(Keys.CHATS_INFO_KEY)
+                .removeEventListener(trackerEventListener!!)
+        }
     }
 
 }

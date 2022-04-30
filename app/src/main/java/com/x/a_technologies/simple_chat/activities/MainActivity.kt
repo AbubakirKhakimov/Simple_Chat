@@ -4,10 +4,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import com.x.a_technologies.simple_chat.R
-import com.x.a_technologies.simple_chat.datas.UriChange
+import com.x.a_technologies.simple_chat.database.UriChange
 import com.x.a_technologies.simple_chat.utils.LocaleManager
 
 class MainActivity : AppCompatActivity() {

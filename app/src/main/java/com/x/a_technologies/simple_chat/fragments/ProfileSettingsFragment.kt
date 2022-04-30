@@ -14,10 +14,10 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.x.a_technologies.simple_chat.R
 import com.x.a_technologies.simple_chat.databinding.FragmentProfileSettingsBinding
-import com.x.a_technologies.simple_chat.datas.Datas
-import com.x.a_technologies.simple_chat.datas.UriCallBack
-import com.x.a_technologies.simple_chat.datas.UriChange
-import com.x.a_technologies.simple_chat.models.Keys
+import com.x.a_technologies.simple_chat.database.DatabaseRef
+import com.x.a_technologies.simple_chat.database.UriCallBack
+import com.x.a_technologies.simple_chat.database.UriChange
+import com.x.a_technologies.simple_chat.database.Keys
 import com.x.a_technologies.simple_chat.models.MemberInfo
 import com.x.a_technologies.simple_chat.models.User
 import java.io.ByteArrayOutputStream
@@ -39,11 +39,11 @@ class ProfileSettingsFragment : Fragment(), UriCallBack {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (Datas.currentUser.imageUrl != null) {
-            Glide.with(requireActivity()).load(Datas.currentUser.imageUrl).into(binding.circleImageView)
+        if (DatabaseRef.currentUser.imageUrl != null) {
+            Glide.with(requireActivity()).load(DatabaseRef.currentUser.imageUrl).into(binding.circleImageView)
         }
-        binding.firstName.setText(Datas.currentUser.firstName)
-        binding.lastName.setText(Datas.currentUser.lastName)
+        binding.firstName.setText(DatabaseRef.currentUser.firstName)
+        binding.lastName.setText(DatabaseRef.currentUser.lastName)
 
         binding.backButton.setOnClickListener {
             findNavController().popBackStack()
@@ -57,8 +57,8 @@ class ProfileSettingsFragment : Fragment(), UriCallBack {
             binding.progressBar.visibility = View.VISIBLE
             binding.save.visibility = View.GONE
 
-            if (Datas.currentUser.firstName == binding.firstName.text.toString() &&
-                    Datas.currentUser.lastName == binding.lastName.text.toString() && !imageChanged){
+            if (DatabaseRef.currentUser.firstName == binding.firstName.text.toString() &&
+                    DatabaseRef.currentUser.lastName == binding.lastName.text.toString() && !imageChanged){
                 findNavController().popBackStack()
             }else{
                 if (imageChanged){
@@ -76,12 +76,12 @@ class ProfileSettingsFragment : Fragment(), UriCallBack {
         val memberInfo = getMemberInfo(user)
         val writeChatResMap = HashMap<String, Any>()
 
-        Datas.currentUser.chatIdList.forEachIndexed { index, chatId ->
+        DatabaseRef.currentUser.chatIdList.forEachIndexed { index, chatId ->
             writeChatResMap["${Keys.CHATS_INFO_KEY}/$chatId/membersInfoList/${getMemberIndex(index)}"] = memberInfo
         }
 
-        Datas.refUser.child(user.number).setValue(user)
-        Datas.refChat.updateChildren(writeChatResMap)
+        DatabaseRef.usersRef.child(user.number).setValue(user)
+        DatabaseRef.chatsRef.updateChildren(writeChatResMap)
 
         binding.progressBar.visibility = View.GONE
         binding.save.visibility = View.VISIBLE
@@ -90,8 +90,8 @@ class ProfileSettingsFragment : Fragment(), UriCallBack {
     }
 
     private fun getMemberIndex(index:Int):Int?{
-        for (i in Datas.chatInfoList[index].membersInfoList.indices){
-            if (Datas.currentUser.number == Datas.chatInfoList[index].membersInfoList[i].number){
+        for (i in DatabaseRef.chatInfoList[index].membersInfoList.indices){
+            if (DatabaseRef.currentUser.number == DatabaseRef.chatInfoList[index].membersInfoList[i].number){
                 return i
             }
         }
@@ -103,7 +103,7 @@ class ProfileSettingsFragment : Fragment(), UriCallBack {
     }
 
     private fun getUser(imageUrl: String?):User{
-        val user = Datas.currentUser
+        val user = DatabaseRef.currentUser
         user.firstName = binding.firstName.text.toString()
         user.lastName = binding.lastName.text.toString()
         if (imageUrl != null) {
@@ -117,7 +117,7 @@ class ProfileSettingsFragment : Fragment(), UriCallBack {
         val byteArrayOutputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
-        val imageRef = Datas.storageRef.child("${Datas.auth.currentUser!!.phoneNumber}_user_avatar")
+        val imageRef = DatabaseRef.storageRef.child("${DatabaseRef.auth.currentUser!!.phoneNumber}_user_avatar")
         val uploadTask = imageRef.putBytes(byteArray)
 
         val urlTask = uploadTask.continueWithTask { task ->

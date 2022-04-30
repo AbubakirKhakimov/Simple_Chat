@@ -2,24 +2,35 @@ package com.x.a_technologies.simple_chat.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
 import com.x.a_technologies.simple_chat.R
 import com.x.a_technologies.simple_chat.activities.MainActivity
 import com.x.a_technologies.simple_chat.databinding.FragmentSplashBinding
-import com.x.a_technologies.simple_chat.datas.Datas
+import com.x.a_technologies.simple_chat.database.DatabaseRef
+import com.x.a_technologies.simple_chat.models.MainViewModel
 import com.x.a_technologies.simple_chat.models.User
 
 class SplashFragment : Fragment() {
 
     lateinit var binding: FragmentSplashBinding
+    lateinit var viewModel: MainViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        initObservers()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,36 +44,35 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (Datas.auth.currentUser == null) {
+        if (Firebase.auth.currentUser == null) {
             binding.animationView.pauseAnimation()
             findNavController().navigate(R.id.action_splashFragment_to_authorizationFragment)
         } else {
-            checkUserDatabase()
+            viewModel.getCurrentUser()
         }
 
     }
 
-    fun checkUserDatabase(){
-        Datas.refUser.child(Datas.auth.currentUser!!.phoneNumber!!)
-            .addListenerForSingleValueEvent(object: ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.value == null){
-                        binding.animationView.pauseAnimation()
-                        findNavController().navigate(R.id.action_splashFragment_to_getUserInfoFragment)
-                    }else{
-                        Datas.currentUser = snapshot.getValue(User::class.java)!!
+    private fun initObservers(){
+        viewModel.currentUserData.observe(this){
+            checkUser(it)
+        }
 
-                        binding.animationView.pauseAnimation()
-                        startActivity(Intent(requireActivity(), MainActivity::class.java))
-                        requireActivity().finish()
-                    }
-                }
-                override fun onCancelled(error: DatabaseError) {
-                    binding.animationView.pauseAnimation()
-                    startActivity(Intent(requireActivity(), MainActivity::class.java))
-                    requireActivity().finish()
-                }
-            })
+        viewModel.errorData.observe(this){
+            Toast.makeText(requireActivity(), "Error!", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun checkUser(currentUser: User?){
+        if (currentUser == null){
+            binding.animationView.pauseAnimation()
+            findNavController().navigate(R.id.action_splashFragment_to_getUserInfoFragment)
+        }else{
+            DatabaseRef.currentUser = currentUser
+            binding.animationView.pauseAnimation()
+            startActivity(Intent(requireActivity(), MainActivity::class.java))
+            requireActivity().finish()
+        }
     }
 
 }

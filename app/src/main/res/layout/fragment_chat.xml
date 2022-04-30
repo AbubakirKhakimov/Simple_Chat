@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:emojicon="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.ChatFragment">
 
     <LinearLayout
@@ -80,18 +81,19 @@
             android:id="@+id/emojiButton"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:src="@drawable/ic_emoji"
+            android:src="@drawable/smiley"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             app:tint="@color/white" />
 
-        <EditText
+        <hani.momanii.supernova_emoji_library.Helper.EmojiconEditText
             android:id="@+id/message"
             android:layout_width="0dp"
             android:layout_height="?attr/actionBarSize"
             android:layout_weight="1"
-            android:textSize="20sp"
+            android:textSize="16sp"
+            emojicon:emojiconSize="20sp"
             android:textColor="@color/white"
             android:hint="@string/message"
             android:background="@color/main_color"/>

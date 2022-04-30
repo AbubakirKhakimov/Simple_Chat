@@ -1,4 +1,4 @@
-package com.x.a_technologies.simple_chat.datas
+package com.x.a_technologies.simple_chat.database
 
 import android.net.Uri
 

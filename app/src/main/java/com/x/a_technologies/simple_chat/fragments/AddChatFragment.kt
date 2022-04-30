@@ -1,7 +1,6 @@
 package com.x.a_technologies.simple_chat.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.x.a_technologies.simple_chat.R
 import com.x.a_technologies.simple_chat.databinding.FragmentAddChatBinding
-import com.x.a_technologies.simple_chat.datas.Datas
+import com.x.a_technologies.simple_chat.database.DatabaseRef
+import com.x.a_technologies.simple_chat.database.Keys
 import com.x.a_technologies.simple_chat.models.*
 
 class AddChatFragment: BottomSheetDialogFragment() {
@@ -39,7 +39,7 @@ class AddChatFragment: BottomSheetDialogFragment() {
                 number == "+" -> {
                     Toast.makeText(requireActivity(), getString(R.string.enter_a_phone_number), Toast.LENGTH_SHORT).show()
                 }
-                number == Datas.currentUser.number -> {
+                number == DatabaseRef.currentUser.number -> {
                     Toast.makeText(requireActivity(), getString(R.string.is_your_phone_number), Toast.LENGTH_SHORT).show()
                 }
                 checkNumberForThisChats() -> {
@@ -49,7 +49,7 @@ class AddChatFragment: BottomSheetDialogFragment() {
                     binding.checkNumber.visibility = View.INVISIBLE
                     binding.progressBar.visibility = View.VISIBLE
 
-                    Datas.refUser.child(number).addListenerForSingleValueEvent(object : ValueEventListener {
+                    DatabaseRef.usersRef.child(number).addListenerForSingleValueEvent(object : ValueEventListener {
                         override fun onDataChange(snapshot: DataSnapshot) {
                             if (snapshot.value == null) {
                                 Toast.makeText(requireActivity(), getString(R.string.number_is_not_registered), Toast.LENGTH_SHORT).show()
@@ -73,7 +73,7 @@ class AddChatFragment: BottomSheetDialogFragment() {
     }
 
     private fun checkNumberForThisChats():Boolean{
-        for (chat in Datas.chatInfoList){
+        for (chat in DatabaseRef.chatInfoList){
             if (number == getOtherUser(chat.membersInfoList)!!.number){
                 return true
             }
@@ -83,7 +83,7 @@ class AddChatFragment: BottomSheetDialogFragment() {
     
     private fun getOtherUser(membersList:List<MemberInfo>):MemberInfo?{
         for (user in membersList){
-            if (Datas.currentUser.number != user.number){
+            if (DatabaseRef.currentUser.number != user.number){
                 return user
             }
         }
@@ -91,24 +91,24 @@ class AddChatFragment: BottomSheetDialogFragment() {
     }
 
     fun createNewChat(snapshot: DataSnapshot){
-        val currentChatRef = Datas.refChat.child(Keys.CHATS_INFO_KEY).push()
+        val currentChatRef = DatabaseRef.chatsRef.child(Keys.CHATS_INFO_KEY).push()
         val otherUser = snapshot.getValue(User::class.java)!!
 
         val chatInfo = ChatInfo(
             currentChatRef.key!!,
             Message(),
-            listOf(getMembersInfo(Datas.currentUser), getMembersInfo(otherUser))
+            listOf(getMembersInfo(DatabaseRef.currentUser), getMembersInfo(otherUser))
         )
         currentChatRef.setValue(chatInfo)
 
-        Datas.currentUser.chatIdList.add(currentChatRef.key!!)
+        DatabaseRef.currentUser.chatIdList.add(currentChatRef.key!!)
         otherUser.chatIdList.add(currentChatRef.key!!)
 
         val childUpdates = hashMapOf<String, Any>(
-            "${Datas.currentUser.number}/${Keys.CHAT_ID_LIST_KEY}" to Datas.currentUser.chatIdList,
+            "${DatabaseRef.currentUser.number}/${Keys.CHAT_ID_LIST_KEY}" to DatabaseRef.currentUser.chatIdList,
             "$number/${Keys.CHAT_ID_LIST_KEY}" to otherUser.chatIdList,
         )
-        Datas.refUser.updateChildren(childUpdates)
+        DatabaseRef.usersRef.updateChildren(childUpdates)
 
         binding.checkNumber.visibility = View.VISIBLE
         binding.progressBar.visibility = View.INVISIBLE
