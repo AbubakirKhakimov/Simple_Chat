@@ -5,7 +5,7 @@
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgraund_white"
+    android:background="@color/background_white"
     tools:context=".fragments.ChatsSelectFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,7 +13,7 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/addChat"
+            android:id="@+id/newMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -21,7 +21,7 @@
             app:fabSize="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_add"
+            app:srcCompat="@drawable/ic_baseline_edit_24"
             app:tint="@color/white" />
 
         <LinearLayout
@@ -29,30 +29,34 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/main_color">
+                android:background="@color/main_color"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/drawerMenuImg"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
                     android:src="@drawable/ic_menu"
                     app:tint="@color/white" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/title"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:text="@string/app_name"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-            </FrameLayout>
+            </LinearLayout>
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -62,23 +66,14 @@
                     android:id="@+id/adviceTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center"
+                    android:lineSpacingExtra="10dp"
                     android:text="@string/advice_add_chat"
                     android:textColor="@color/gray"
                     android:textSize="18sp"
-                    android:gravity="center"
-                    android:visibility="gone"
-                    android:lineSpacingExtra="10dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_gravity="center"/>
-
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_horizontal|top"
-                    android:layout_marginTop="8dp"
-                    android:indeterminateTint="@color/main_color"
                     android:visibility="gone" />
 
                 <androidx.recyclerview.widget.RecyclerView

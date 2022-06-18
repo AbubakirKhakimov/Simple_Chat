@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.x.a_technologies.simple_chat.R
 import com.x.a_technologies.simple_chat.databinding.ChatsListItemLayoutBinding
-import com.x.a_technologies.simple_chat.database.DatabaseRef
+import com.x.a_technologies.simple_chat.database.UserData
 import com.x.a_technologies.simple_chat.models.ChatInfo
 import com.x.a_technologies.simple_chat.models.MemberInfo
 import java.text.SimpleDateFormat
@@ -70,7 +70,7 @@ class ChatsListAdapter(val chatsInfoList: ArrayList<ChatInfo>, val context:Conte
 
     private fun getOtherUser(usersList:List<MemberInfo>):MemberInfo?{
         for (user in usersList){
-            if (user.number != DatabaseRef.currentUser.number){
+            if (user.phoneNumber != UserData.currentUser!!.phoneNumber){
                 return user
             }
         }

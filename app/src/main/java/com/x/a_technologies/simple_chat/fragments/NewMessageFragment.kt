@@ -4,52 +4,48 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.os.bundleOf
-import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.x.a_technologies.simple_chat.R
+import com.x.a_technologies.simple_chat.adapters.ContactsListAdapter
+import com.x.a_technologies.simple_chat.adapters.ContactsListAdapterCallBack
 import com.x.a_technologies.simple_chat.database.Constants
 import com.x.a_technologies.simple_chat.database.DatabaseRef
 import com.x.a_technologies.simple_chat.database.Keys
 import com.x.a_technologies.simple_chat.database.UserData
-import com.x.a_technologies.simple_chat.databinding.FragmentAddChatBinding
+import com.x.a_technologies.simple_chat.databinding.FragmentNewMessageBinding
 import com.x.a_technologies.simple_chat.databinding.NotRegistredDialogLayoutBinding
 import com.x.a_technologies.simple_chat.models.*
 import com.x.a_technologies.simple_chat.models.viewModels.MainViewModel
+import com.x.a_technologies.simple_chat.utils.ContactManager
 import com.x.a_technologies.simple_chat.utils.LoadingDialogManager
-import com.x.a_technologies.simple_chat.utils.PhoneMaskManager
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class AddChatFragment : Fragment() {
 
-    private lateinit var binding: FragmentAddChatBinding
+class NewMessageFragment: Fragment(), ContactsListAdapterCallBack {
+    
+    private lateinit var binding: FragmentNewMessageBinding
     private lateinit var viewModel: MainViewModel
     private lateinit var loadingDialogManager: LoadingDialogManager
-    private var phoneMaskPosition: Int? = null
+    private lateinit var contactsListAdapter: ContactsListAdapter
     private lateinit var chatsInfoList: ArrayList<ChatInfo>
 
-    private val phoneMasksList = ArrayList<PhoneMask>()
+    private var contactsList = ArrayList<Contact>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loadingDialogManager = LoadingDialogManager(requireActivity())
         chatsInfoList = arguments?.getParcelableArrayList("chatsInfoList")!!
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        setFragmentResultListener("getPhoneMaskPosition") { requestKey, bundle ->
-            phoneMaskPosition = bundle.getInt("position")
-            updateUI()
-        }
-        getPhoneMasks()
+        loadingDialogManager = LoadingDialogManager(requireActivity())
     }
 
     override fun onCreateView(
@@ -57,31 +53,22 @@ class AddChatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        binding = FragmentAddChatBinding.inflate(layoutInflater)
+        binding = FragmentNewMessageBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        updateUI()
+        contactsListAdapter = ContactsListAdapter(contactsList, this)
+        binding.contactsRv.adapter = contactsListAdapter
 
-        binding.countryNameLayout.setOnClickListener {
-            findNavController().navigate(R.id.action_addChatFragment_to_selectCountryCodeFragment)
+        lifecycleScope.launch{
+            readAllContacts()
         }
 
         binding.backStack.setOnClickListener {
             findNavController().popBackStack()
-        }
-
-        binding.check.setOnClickListener {
-            checkNumber()
-        }
-
-        binding.countryCode.addTextChangedListener {
-            if (binding.countryCode.isFocused) {
-                searchCountryCode(it.toString())
-            }
         }
 
         viewModel.errorData.observe(viewLifecycleOwner){
@@ -89,44 +76,40 @@ class AddChatFragment : Fragment() {
             loadingDialogManager.dismissDialog()
         }
 
-    }
-
-    private fun checkNumber(){
-        val phoneNumber = "${binding.countryCode.text}${binding.phoneNumber.rawText}"
-
-        when (phoneNumber) {
-            "+" -> {
-                Toast.makeText(requireActivity(), getString(R.string.enter_a_phone_number), Toast.LENGTH_SHORT).show()
-            }
-            UserData.currentUser!!.phoneNumber -> {
-                Toast.makeText(requireActivity(), getString(R.string.is_your_phone_number), Toast.LENGTH_SHORT).show()
-            }
-            else -> {
-                checkContactNumberForThisChats(phoneNumber)
-            }
+        binding.addChat.setOnClickListener {
+            findNavController().navigate(R.id.action_newMessageFragment_to_addChatFragment, bundleOf(
+                "chatsInfoList" to chatsInfoList
+            ))
         }
+        
     }
 
-    private fun checkContactNumberForThisChats(phoneNumber: String){
+    override fun itemSelectedListener(contact: Contact) {
+        checkContactNumberForThisChats(contact)
+    }
+
+    private fun checkContactNumberForThisChats(contact: Contact){
         for (chat in chatsInfoList){
-            if (phoneNumber == getOtherUser(chat.membersInfoList)!!.phoneNumber){
-                findNavController().navigate(R.id.action_addChatFragment_to_chatFragment, bundleOf(
+            if (contact.phoneNumber == getOtherUser(chat.membersInfoList)!!.phoneNumber){
+                findNavController().navigate(R.id.action_newMessageFragment_to_chatFragment, bundleOf(
                     "selectedChatInfo" to chat
                 ))
                 return
             }
         }
 
-        checkUserForDatabase(phoneNumber)
+        checkUserForDatabase(contact.phoneNumber)
     }
 
-    private fun getOtherUser(membersList:List<MemberInfo>):MemberInfo?{
-        for (user in membersList){
-            if (UserData.currentUser!!.phoneNumber != user.phoneNumber){
-                return user
+    private suspend fun readAllContacts(){
+        withContext(Dispatchers.IO) {
+            contactsList.apply {
+                clear()
+                addAll(ContactManager(requireActivity()).readPhoneContacts())
             }
         }
-        return null
+
+        contactsListAdapter.notifyDataSetChanged()
     }
 
     private fun checkUserForDatabase(phoneNumber: String){
@@ -144,6 +127,15 @@ class AddChatFragment : Fragment() {
                 removeObservers(viewLifecycleOwner)
             }
         }
+    }
+    
+    private fun getOtherUser(membersList:List<MemberInfo>):MemberInfo?{
+        for (user in membersList){
+            if (UserData.currentUser!!.phoneNumber != user.phoneNumber){
+                return user
+            }
+        }
+        return null
     }
 
     private fun createNewChat(otherUser: User){
@@ -165,13 +157,13 @@ class AddChatFragment : Fragment() {
 
         viewModel.writeInUpdateChildren(DatabaseRef.rootRef, childUpdates).observe(viewLifecycleOwner){
             loadingDialogManager.dismissDialog()
-            findNavController().navigate(R.id.action_addChatFragment_to_chatFragment, bundleOf(
+            findNavController().navigate(R.id.action_newMessageFragment_to_chatFragment, bundleOf(
                 "selectedChatInfo" to chatInfo
             ))
         }
     }
 
-    private fun getMembersInfo(user:User): MemberInfo {
+    private fun getMembersInfo(user:User): MemberInfo{
         return MemberInfo(user.phoneNumber, user.firstName, user.lastName, user.imageUrl)
     }
 
@@ -196,56 +188,6 @@ class AddChatFragment : Fragment() {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:$phoneNumber"))
         intent.putExtra("sms_body", "${getString(R.string.invite_sms_text)} ${Constants.APP_REFERENCE}")
         startActivity(intent)
-    }
-
-    private fun searchCountryCode(code: String){
-        lifecycleScope.launch{
-            withContext(Dispatchers.Default){
-                for ((index, phoneMask) in phoneMasksList.withIndex()){
-                    if (phoneMask.countryCode == code){
-                        phoneMaskPosition = index
-                        break
-                    }else if (index == phoneMasksList.size-1){
-                        phoneMaskPosition = null
-                    }
-                }
-            }
-
-            updateUI()
-        }
-    }
-
-    private fun getPhoneMasks(){
-        lifecycleScope.launch{
-            withContext(Dispatchers.Default){
-                phoneMasksList.apply {
-                    clear()
-                    addAll(PhoneMaskManager().loadPhoneMusk())
-                }
-            }
-        }
-    }
-
-    private fun updateUI() {
-        if (phoneMaskPosition != null) {
-            val item = phoneMasksList[phoneMaskPosition!!]
-            binding.countryName.text = item.name
-            if (!binding.countryCode.isFocused) {
-                binding.countryCode.setText(item.countryCode)
-            }
-            binding.phoneNumber.hint = item.mask
-                .replace("0", "-")
-                .replace(" ", "-")
-            binding.phoneNumber.mask = item.mask
-        }else{
-            if (binding.countryCode.text.toString() == "+" || binding.countryCode.text!!.isEmpty()){
-                binding.countryName.text = getString(R.string.choose_a_country)
-            }else{
-                binding.countryName.text = getString(R.string.no_such_country_code)
-            }
-            binding.phoneNumber.hint = "----------"
-            binding.phoneNumber.mask = "0000000000"
-        }
     }
 
 }

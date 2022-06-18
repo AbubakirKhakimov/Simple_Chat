@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/drawable/ic_arrow_next.xml" value="0.26614583333333336" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/drawable/ic_baseline_language_24.xml" value="0.26614583333333336" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.2765" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/drawable/ic_sign_out.xml" value="0.18425925925925926" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/drawable/ic_user_settings.xml" value="0.26614583333333336" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/drawable/message_backgraund.xml" value="0.26614583333333336" />
@@ -13,21 +14,30 @@
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout-v23/fragment_get_user_info.xml" value="0.25" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/activity_intro.xml" value="0.25" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/activity_main.xml" value="0.2359375" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/add_chat_dialog_layout.xml" value="0.3614583333333333" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/chat_item_layout.xml" value="0.536" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/chats_list_item_layout.xml" value="0.3625" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/chats_list_pager_layout.xml" value="0.25" />
-        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_add_chat.xml" value="0.25" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/choose_cauntry_item_layout.xml" value="0.3625" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/choose_country_item_layout.xml" value="0.3625" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/contacts_list_item.xml" value="0.3614583333333333" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/contacts_list_item_layout.xml" value="0.3625" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_add_chat.xml" value="0.3625" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_authorization.xml" value="0.25" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_change_language.xml" value="0.25" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_chat.xml" value="0.3625" />
-        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_chats_select.xml" value="0.264" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_chats_select.xml" value="0.3625" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_get_user_info.xml" value="0.25" />
-        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_profile_settings.xml" value="0.25" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_new_message.xml" value="0.3625" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_profile_settings.xml" value="0.3625" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_select_country_code.xml" value="0.3625" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_select_image.xml" value="0.25" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_splash.xml" value="0.25" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/fragment_verification_code.xml" value="0.25" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/loading_dialog_layout.xml" value="0.27109375" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/nav_header_layout.xml" value="0.25" />
-        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/sign_out_alert_dialog.xml" value="0.25" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/not_registred_dialog_layout.xml" value="0.3614583333333333" />
+        <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/layout/sign_out_alert_dialog.xml" value="0.3625" />
         <entry key="..\:/PROEKT/Android Studio/Simple chat/app/src/main/res/menu/nav_drawer_menu.xml" value="0.25" />
       </map>
     </option>

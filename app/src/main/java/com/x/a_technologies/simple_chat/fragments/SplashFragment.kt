@@ -10,15 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.x.a_technologies.simple_chat.R
 import com.x.a_technologies.simple_chat.activities.MainActivity
 import com.x.a_technologies.simple_chat.databinding.FragmentSplashBinding
-import com.x.a_technologies.simple_chat.database.DatabaseRef
-import com.x.a_technologies.simple_chat.models.MainViewModel
+import com.x.a_technologies.simple_chat.database.UserData
+import com.x.a_technologies.simple_chat.models.viewModels.MainViewModel
 import com.x.a_technologies.simple_chat.models.User
 
 class SplashFragment : Fragment() {
@@ -29,7 +26,6 @@ class SplashFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        initObservers()
     }
 
     override fun onCreateView(
@@ -48,19 +44,15 @@ class SplashFragment : Fragment() {
             binding.animationView.pauseAnimation()
             findNavController().navigate(R.id.action_splashFragment_to_authorizationFragment)
         } else {
-            viewModel.getCurrentUser()
+            viewModel.checkUser(Firebase.auth.currentUser!!.phoneNumber!!).observe(viewLifecycleOwner){
+                checkUser(it)
+            }
         }
 
-    }
-
-    private fun initObservers(){
-        viewModel.currentUserData.observe(this){
-            checkUser(it)
-        }
-
-        viewModel.errorData.observe(this){
+        viewModel.errorData.observe(viewLifecycleOwner){
             Toast.makeText(requireActivity(), "Error!", Toast.LENGTH_SHORT).show()
         }
+
     }
 
     private fun checkUser(currentUser: User?){
@@ -68,7 +60,7 @@ class SplashFragment : Fragment() {
             binding.animationView.pauseAnimation()
             findNavController().navigate(R.id.action_splashFragment_to_getUserInfoFragment)
         }else{
-            DatabaseRef.currentUser = currentUser
+            UserData.currentUser = currentUser
             binding.animationView.pauseAnimation()
             startActivity(Intent(requireActivity(), MainActivity::class.java))
             requireActivity().finish()

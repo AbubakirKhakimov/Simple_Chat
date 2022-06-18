@@ -1,6 +1,5 @@
 package com.x.a_technologies.simple_chat.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,16 +14,10 @@ import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.x.a_technologies.simple_chat.R
-import com.x.a_technologies.simple_chat.activities.MainActivity
 import com.x.a_technologies.simple_chat.databinding.FragmentAuthorizationBinding
-import com.x.a_technologies.simple_chat.database.DatabaseRef
-import com.x.a_technologies.simple_chat.models.FragmentsCallBackViewModel
-import com.x.a_technologies.simple_chat.models.User
+import com.x.a_technologies.simple_chat.models.viewModels.FragmentsCallBackViewModel
 import java.util.concurrent.TimeUnit
 
 class AuthorizationFragment : Fragment() {

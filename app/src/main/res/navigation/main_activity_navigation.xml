@@ -28,8 +28,8 @@
             android:id="@+id/action_chatsSelectFragment_to_changeLanguageFragment"
             app:destination="@id/changeLanguageFragment" />
         <action
-            android:id="@+id/action_chatsSelectFragment_to_addChatFragment"
-            app:destination="@id/addChatFragment" />
+            android:id="@+id/action_chatsSelectFragment_to_newMessageFragment"
+            app:destination="@id/newMessageFragment" />
     </fragment>
     <fragment
         android:id="@+id/chatFragment"
@@ -47,8 +47,32 @@
         android:label="fragment_profile_settings"
         tools:layout="@layout/fragment_profile_settings" />
     <fragment
+        android:id="@+id/newMessageFragment"
+        android:name="com.x.a_technologies.simple_chat.fragments.NewMessageFragment"
+        android:label="fragment_new_message"
+        tools:layout="@layout/fragment_new_message" >
+        <action
+            android:id="@+id/action_newMessageFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+        <action
+            android:id="@+id/action_newMessageFragment_to_addChatFragment"
+            app:destination="@id/addChatFragment" />
+    </fragment>
+    <fragment
         android:id="@+id/addChatFragment"
         android:name="com.x.a_technologies.simple_chat.fragments.AddChatFragment"
         android:label="fragment_add_chat"
-        tools:layout="@layout/fragment_add_chat" />
+        tools:layout="@layout/fragment_add_chat" >
+        <action
+            android:id="@+id/action_addChatFragment_to_selectCountryCodeFragment"
+            app:destination="@id/selectCountryCodeFragment" />
+        <action
+            android:id="@+id/action_addChatFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectCountryCodeFragment"
+        android:name="com.x.a_technologies.simple_chat.fragments.SelectCountryCodeFragment"
+        android:label="fragment_select_country_code"
+        tools:layout="@layout/fragment_select_country_code" />
 </navigation>

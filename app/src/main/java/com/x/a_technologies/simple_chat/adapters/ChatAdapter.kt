@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.x.a_technologies.simple_chat.databinding.ChatItemLayoutBinding
-import com.x.a_technologies.simple_chat.database.DatabaseRef
+import com.x.a_technologies.simple_chat.database.UserData
 import com.x.a_technologies.simple_chat.models.Message
 import java.text.SimpleDateFormat
 import java.util.*
@@ -33,7 +33,7 @@ class ChatAdapter(val messagesList:List<Message>):RecyclerView.Adapter<ChatAdapt
 
     private fun getParams(item:Message):ViewGroup.LayoutParams{
         val params = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,FrameLayout.LayoutParams.WRAP_CONTENT)
-        if (item.number == DatabaseRef.currentUser.number){
+        if (item.number == UserData.currentUser!!.phoneNumber){
             params.gravity = Gravity.END
             params.marginStart = 200
         }else{

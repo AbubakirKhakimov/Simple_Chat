@@ -9,16 +9,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.x.a_technologies.simple_chat.R
 import com.x.a_technologies.simple_chat.adapters.ChatAdapter
 import com.x.a_technologies.simple_chat.databinding.FragmentChatBinding
 import com.x.a_technologies.simple_chat.database.DatabaseRef
 import com.x.a_technologies.simple_chat.database.Keys
+import com.x.a_technologies.simple_chat.database.UserData
 import com.x.a_technologies.simple_chat.models.ChatInfo
-import com.x.a_technologies.simple_chat.models.MainViewModel
+import com.x.a_technologies.simple_chat.models.viewModels.MainViewModel
 import com.x.a_technologies.simple_chat.models.MemberInfo
 import com.x.a_technologies.simple_chat.models.Message
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions
@@ -39,7 +38,6 @@ class ChatFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-        initObservers()
 
         currentChatInfo = arguments?.getSerializable("selectedChatInfo") as ChatInfo
         otherMemberInfo = getOtherUser(currentChatInfo.membersInfoList)!!
@@ -76,15 +74,18 @@ class ChatFragment : Fragment() {
             findNavController().popBackStack()
         }
 
+        viewModel.errorData.observe(viewLifecycleOwner){
+            Toast.makeText(requireActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show()
+            binding.progressBar.visibility = View.GONE
+        }
+
     }
 
     private fun initChatTracker(){
         binding.progressBar.visibility = View.VISIBLE
         trackerEventListener = viewModel.initChatTracker(currentChatInfo.chatId)
-    }
 
-    private fun initObservers() {
-        viewModel.chatTracker.observe(this){
+        viewModel.chatTracker.observe(viewLifecycleOwner){
             messagesList.apply {
                 clear()
                 addAll(it)
@@ -92,15 +93,6 @@ class ChatFragment : Fragment() {
 
             chatAdapter.notifyDataSetChanged()
             binding.recyclerView.scrollToPosition(messagesList.size-1)
-            binding.progressBar.visibility = View.GONE
-        }
-
-        viewModel.successfulWrited.observe(this){
-
-        }
-
-        viewModel.errorData.observe(this){
-            Toast.makeText(requireActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show()
             binding.progressBar.visibility = View.GONE
         }
     }
@@ -120,7 +112,7 @@ class ChatFragment : Fragment() {
 
         val message = Message(
             messageId,
-            DatabaseRef.currentUser.number,
+            UserData.currentUser!!.phoneNumber,
             binding.message.text.toString().trim(),
             Date().time
         )
@@ -130,13 +122,16 @@ class ChatFragment : Fragment() {
             "${Keys.MESSAGES_KEY}/${currentChatInfo.chatId}/$messageId" to message
         )
 
-        viewModel.writeInUpdateChildren(DatabaseRef.chatsRef, childUpdates)
+        viewModel.writeInUpdateChildren(DatabaseRef.chatsRef, childUpdates).observe(viewLifecycleOwner){
+
+        }
+
         binding.message.text.clear()
     }
 
     private fun getOtherUser(usersList:List<MemberInfo>): MemberInfo?{
         for (user in usersList){
-            if (user.number != DatabaseRef.currentUser.number){
+            if (user.phoneNumber != UserData.currentUser!!.phoneNumber){
                 return user
             }
         }

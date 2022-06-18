@@ -16,15 +16,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthProvider
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.x.a_technologies.simple_chat.R
 import com.x.a_technologies.simple_chat.activities.MainActivity
 import com.x.a_technologies.simple_chat.databinding.FragmentVerificationCodeBinding
-import com.x.a_technologies.simple_chat.database.DatabaseRef
-import com.x.a_technologies.simple_chat.models.FragmentsCallBackViewModel
-import com.x.a_technologies.simple_chat.models.MainViewModel
+import com.x.a_technologies.simple_chat.database.UserData
+import com.x.a_technologies.simple_chat.models.viewModels.FragmentsCallBackViewModel
+import com.x.a_technologies.simple_chat.models.viewModels.MainViewModel
 import com.x.a_technologies.simple_chat.models.User
 
 class VerificationCodeFragment : Fragment() {
@@ -56,18 +55,8 @@ class VerificationCodeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initObservers()
-
         binding.number.text = phoneNumber
-
         listeners()
-
-    }
-
-    private fun initObservers(){
-        viewModel.currentUserData.observe(viewLifecycleOwner){
-            checkUser(it)
-        }
 
         viewModel.errorData.observe(viewLifecycleOwner){
             Toast.makeText(requireActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show()
@@ -81,6 +70,7 @@ class VerificationCodeFragment : Fragment() {
 
             signInWithPhoneAuthCredential(it)
         }
+
     }
 
     private fun verification(){
@@ -89,9 +79,11 @@ class VerificationCodeFragment : Fragment() {
     }
 
     private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
-        DatabaseRef.auth.signInWithCredential(credential).addOnCompleteListener(requireActivity()) { task ->
+        Firebase.auth.signInWithCredential(credential).addOnCompleteListener(requireActivity()) { task ->
             if (task.isSuccessful) {
-                viewModel.getCurrentUser()
+                viewModel.checkUser(Firebase.auth.currentUser!!.phoneNumber!!).observe(viewLifecycleOwner){
+                    checkUser(it)
+                }
             } else {
                 isLoading(false)
                 Toast.makeText(requireActivity(), getString(R.string.invalidCode), Toast.LENGTH_SHORT).show()
@@ -107,7 +99,7 @@ class VerificationCodeFragment : Fragment() {
         if (currentUser == null) {
             findNavController().navigate(R.id.action_verificationCodeFragment_to_getUserInfoFragment)
         } else {
-            DatabaseRef.currentUser = currentUser
+            UserData.currentUser = currentUser
 
             startActivity(Intent(requireActivity(), MainActivity::class.java))
             requireActivity().finish()

@@ -36,7 +36,7 @@
     <string name="please_write_something">Пожалуйста, напишите что-нибудь!</string>
     <string name="changes_saved">Изменения сохранены!</string>
     <string name="enter_the_phone_number">Введите номер телефона</string>
-    <string name="check">Добавить чат</string>
+    <string name="add_chat">Добавить чат</string>
     <string name="enter_a_phone_number">Пожалуйста, введите номер телефона!</string>
     <string name="is_your_phone_number">Это ваш номер телефона!</string>
     <string name="this_number_is_in_your_chat_list">Этот номер есть в вашем списке чатов!</string>

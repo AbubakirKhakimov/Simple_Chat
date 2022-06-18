@@ -1,4 +1,4 @@
-package com.x.a_technologies.simple_chat.models
+package com.x.a_technologies.simple_chat.models.viewModels
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
