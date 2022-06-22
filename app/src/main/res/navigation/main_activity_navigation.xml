@@ -29,7 +29,11 @@
             app:destination="@id/changeLanguageFragment" />
         <action
             android:id="@+id/action_chatsSelectFragment_to_newMessageFragment"
-            app:destination="@id/newMessageFragment" />
+            app:destination="@id/newMessageFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/chatFragment"
@@ -53,10 +57,18 @@
         tools:layout="@layout/fragment_new_message" >
         <action
             android:id="@+id/action_newMessageFragment_to_chatFragment"
-            app:destination="@id/chatFragment" />
+            app:destination="@id/chatFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right"/>
         <action
             android:id="@+id/action_newMessageFragment_to_addChatFragment"
-            app:destination="@id/addChatFragment" />
+            app:destination="@id/addChatFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/addChatFragment"
@@ -65,10 +77,18 @@
         tools:layout="@layout/fragment_add_chat" >
         <action
             android:id="@+id/action_addChatFragment_to_selectCountryCodeFragment"
-            app:destination="@id/selectCountryCodeFragment" />
+            app:destination="@id/selectCountryCodeFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right"/>
         <action
             android:id="@+id/action_addChatFragment_to_chatFragment"
-            app:destination="@id/chatFragment" />
+            app:destination="@id/chatFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/selectCountryCodeFragment"
