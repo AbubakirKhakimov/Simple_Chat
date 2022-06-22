@@ -89,4 +89,7 @@ dependencies {
 
     //Masked editText
     implementation 'ru.egslava:MaskedEditText:1.0.5'
+
+    //CodeEditText
+    implementation 'com.github.lukelorusso:CodeEditText:1.1.1'
 }

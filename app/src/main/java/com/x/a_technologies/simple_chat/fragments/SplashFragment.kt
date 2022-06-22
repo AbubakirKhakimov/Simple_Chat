@@ -41,8 +41,10 @@ class SplashFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (Firebase.auth.currentUser == null) {
-            binding.animationView.pauseAnimation()
-            findNavController().navigate(R.id.action_splashFragment_to_authorizationFragment)
+            binding.animationView.postDelayed({
+                binding.animationView.pauseAnimation()
+                findNavController().navigate(R.id.action_splashFragment_to_authorizationFragment)
+            }, 2000)
         } else {
             viewModel.checkUser(Firebase.auth.currentUser!!.phoneNumber!!).observe(viewLifecycleOwner){
                 checkUser(it)

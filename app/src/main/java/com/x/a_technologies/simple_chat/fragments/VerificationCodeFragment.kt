@@ -25,20 +25,23 @@ import com.x.a_technologies.simple_chat.database.UserData
 import com.x.a_technologies.simple_chat.models.viewModels.FragmentsCallBackViewModel
 import com.x.a_technologies.simple_chat.models.viewModels.MainViewModel
 import com.x.a_technologies.simple_chat.models.User
+import com.x.a_technologies.simple_chat.utils.LoadingDialogManager
 
 class VerificationCodeFragment : Fragment() {
 
-    lateinit var binding: FragmentVerificationCodeBinding
-    lateinit var viewModel: MainViewModel
-    val fragmentsCallBack: FragmentsCallBackViewModel by activityViewModels()
+    private lateinit var binding: FragmentVerificationCodeBinding
+    private lateinit var viewModel: MainViewModel
+    private lateinit var loadingDialogManager: LoadingDialogManager
+    private val fragmentsCallBack: FragmentsCallBackViewModel by activityViewModels()
+    private var permittedChangedListener = true
 
-    lateinit var verificationId:String
-    lateinit var phoneNumber: String
+    private lateinit var verificationId:String
+    private lateinit var phoneNumber: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-
+        loadingDialogManager = LoadingDialogManager(requireActivity())
         phoneNumber = arguments?.getString("phoneNumber")!!
         verificationId = arguments?.getString("verificationId")!!
     }
@@ -55,8 +58,7 @@ class VerificationCodeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.number.text = phoneNumber
-        listeners()
+        binding.number.text = "${getString(R.string.we_will_send_the_code_to)} $phoneNumber"
 
         viewModel.errorData.observe(viewLifecycleOwner){
             Toast.makeText(requireActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show()
@@ -65,16 +67,21 @@ class VerificationCodeFragment : Fragment() {
 
         fragmentsCallBack.autoAuthorizedCallBack.observe(viewLifecycleOwner){
             isLoading(true)
-            closeKeyboard()
-            clearEditText()
-
+            binding.cetMyCode.text = it.smsCode!!
             signInWithPhoneAuthCredential(it)
+        }
+
+        binding.cetMyCode.setOnCodeChangedListener { (code, completed) ->
+            if (completed && permittedChangedListener){
+                isLoading(true)
+                verification(code)
+            }
         }
 
     }
 
-    private fun verification(){
-        val credential = PhoneAuthProvider.getCredential(verificationId, getCode())
+    private fun verification(code: String){
+        val credential = PhoneAuthProvider.getCredential(verificationId, code)
         signInWithPhoneAuthCredential(credential)
     }
 
@@ -87,7 +94,7 @@ class VerificationCodeFragment : Fragment() {
             } else {
                 isLoading(false)
                 Toast.makeText(requireActivity(), getString(R.string.invalidCode), Toast.LENGTH_SHORT).show()
-                clearEditText()
+                binding.cetMyCode.text = ""
             }
         }
     }
@@ -106,82 +113,19 @@ class VerificationCodeFragment : Fragment() {
         }
     }
 
-    private fun getCode():String{
-        var code = ""
-        for (i in 0..5){
-            code += getEditText(i).text.toString()
-        }
-        return code
-    }
-
-    private fun clearEditText(){
-        for (i in 0..5){
-            val editText = getEditText(i)
-            editText.text.clear()
-            editText.clearFocus()
-        }
-        getEditText(0).requestFocus()
-    }
-
-    private fun editTextController(position: Int, it: String) {
-        if (it == "" && position != 0) {
-            getEditText(position).clearFocus()
-            getEditText(position-1).requestFocus()
-        } else if (it != "" && position != 5){
-            getEditText(position).clearFocus()
-            getEditText(position+1).requestFocus()
-        } else if (position == 5){
-            closeKeyboard()
-            getEditText(5).clearFocus()
-
-            isLoading(true)
-            verification()
-        }
-    }
-
     private fun closeKeyboard(){
         val inputMethodManager = requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(getEditText(5).windowToken, 0)
-    }
-
-    private fun listeners(){
-        binding.oneCode.addTextChangedListener {
-            editTextController(0, it.toString())
-        }
-        binding.twoCode.addTextChangedListener {
-            editTextController(1, it.toString())
-        }
-        binding.threeCode.addTextChangedListener {
-            editTextController(2, it.toString())
-        }
-        binding.fourCode.addTextChangedListener {
-            editTextController(3, it.toString())
-        }
-        binding.fiveCode.addTextChangedListener {
-            editTextController(4, it.toString())
-        }
-        binding.sixCode.addTextChangedListener {
-            editTextController(5, it.toString())
-        }
-    }
-
-    private fun getEditText(position:Int): EditText {
-        when(position){
-            0 -> return binding.oneCode
-            1 -> return binding.twoCode
-            2 -> return binding.threeCode
-            3 -> return binding.fourCode
-            4 -> return binding.fiveCode
-            5 -> return binding.sixCode
-        }
-        return binding.oneCode
+        inputMethodManager.hideSoftInputFromWindow(binding.cetMyCode.windowToken, 0)
     }
 
     private fun isLoading(bool: Boolean) {
         if (bool) {
-            binding.progressBar.visibility = View.VISIBLE
+            closeKeyboard()
+            loadingDialogManager.showDialog()
+            permittedChangedListener = false
         } else {
-            binding.progressBar.visibility = View.INVISIBLE
+            loadingDialogManager.dismissDialog()
+            permittedChangedListener = true
         }
     }
 

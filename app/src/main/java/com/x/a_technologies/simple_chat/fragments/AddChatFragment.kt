@@ -70,6 +70,10 @@ class AddChatFragment : Fragment() {
             findNavController().navigate(R.id.action_addChatFragment_to_selectCountryCodeFragment)
         }
 
+        binding.countryName.setOnClickListener {
+            findNavController().navigate(R.id.action_addChatFragment_to_selectCountryCodeFragment)
+        }
+
         binding.backStack.setOnClickListener {
             findNavController().popBackStack()
         }
@@ -229,7 +233,7 @@ class AddChatFragment : Fragment() {
     private fun updateUI() {
         if (phoneMaskPosition != null) {
             val item = phoneMasksList[phoneMaskPosition!!]
-            binding.countryName.text = item.name
+            binding.countryName.setText(item.name)
             if (!binding.countryCode.isFocused) {
                 binding.countryCode.setText(item.countryCode)
             }
@@ -239,12 +243,12 @@ class AddChatFragment : Fragment() {
             binding.phoneNumber.mask = item.mask
         }else{
             if (binding.countryCode.text.toString() == "+" || binding.countryCode.text!!.isEmpty()){
-                binding.countryName.text = getString(R.string.choose_a_country)
+                binding.countryName.setText(getString(R.string.choose_a_country))
             }else{
-                binding.countryName.text = getString(R.string.no_such_country_code)
+                binding.countryName.setText(getString(R.string.no_such_country_code))
             }
-            binding.phoneNumber.hint = "----------"
-            binding.phoneNumber.mask = "0000000000"
+            binding.phoneNumber.hint = "--------------------"
+            binding.phoneNumber.mask = "00000000000000000000"
         }
     }
 

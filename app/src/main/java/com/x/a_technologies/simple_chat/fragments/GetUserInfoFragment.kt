@@ -28,16 +28,14 @@ class GetUserInfoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.nextButton.setOnClickListener {
-            if (binding.firstName.text.isEmpty()){
+            if (binding.firstName.text!!.isEmpty()){
                 Toast.makeText(requireActivity(), getString(R.string.write_your_first_name), Toast.LENGTH_SHORT).show()
             }else{
-
                 findNavController().navigate(R.id.action_getUserInfoFragment_to_selectImageFragment,
                 bundleOf(
                     "firstName" to binding.firstName.text.toString(),
-                    "lastName" to binding.lastName.text.toString())
-                )
-
+                    "lastName" to binding.lastName.text.toString()
+                ))
             }
         }
 

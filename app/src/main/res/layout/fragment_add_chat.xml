@@ -45,8 +45,9 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/countryNameLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -55,23 +56,21 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?attr/selectableItemBackground"
-        android:orientation="vertical">
+        app:endIconDrawable="@drawable/ic_arrow_next"
+        app:endIconMode="custom"
+        app:endIconTint="@color/main_color">
 
-        <TextView
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/countryName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Uzbekistan"
-            android:textColor="@color/main_color"
-            android:textSize="16sp" />
+            android:focusable="false"
+            android:clickable="false"
+            android:focusableInTouchMode="false"
+            android:textColor="@color/main_color" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/main_color" />
-
-    </LinearLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

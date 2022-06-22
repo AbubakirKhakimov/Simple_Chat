@@ -14,15 +14,13 @@
     <string name="successfulAuthorized">Muvaffaqiyatli avtorizatsiya qilindi!</string>
     <string name="validPhoneNumber">Iltimos, yaroqli telefon raqamini kiriting!</string>
     <string name="phone_check">Telefon raqamini tekshirish</string>
-    <string name="you_will_receive_an_sms_at_the_number">Quyidagi raqamga SMS keladi. SMS da kelgan kodni bu yerga kiriting</string>
     <string name="invalidCode">Kod noto\'g\'ri, qayta urinib ko\'ring!</string>
     <string name="get_user_information">Foydalanuvchi ma\'lumotlarini olish</string>
-    <string name="please_enter_your_first_and_last_name">Iltimos, ismingiz va familiyangizni kiriting. Bu maʼlumotlar siz qoʻshgan chatlardagi foydalanuvchilarga koʻrinadi.</string>
+    <string name="please_enter_your_first_and_last_name">Iltimos, ismingiz va familiyangizni kiriting.</string>
     <string name="first_name_necessarily">Ism (majburiy)</string>
     <string name="last_name_not_necessary">Familiya (majburiy emas)</string>
     <string name="write_your_first_name">Iltimos, ismingizni yozing!</string>
     <string name="choose_an_image_for_your_profile">Profilingiz uchun rasm tanlang</string>
-    <string name="the_image_you_add_will_be_visible_to_users_in_the_chats_you_add">Siz qo\'shgan rasm siz qo\'shgan chatlardagi foydalanuvchilarga ko\'rinadi.</string>
     <string name="choose_image">Rasm tanlash</string>
     <string name="go_chat">Chatga o\'tish</string>
     <string name="data_seved">Maʼlumotlar saqlandi!</string>

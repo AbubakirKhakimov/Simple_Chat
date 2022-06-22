@@ -14,15 +14,13 @@
     <string name="successfulAuthorized">Successful authorized!</string>
     <string name="validPhoneNumber">Please enter a valid phone number!</string>
     <string name="phone_check">Phone number verification</string>
-    <string name="you_will_receive_an_sms_at_the_number">An SMS will be sent to the next number. Enter the code received via SMS here</string>
     <string name="invalidCode">Invalid code, please try again!</string>
     <string name="get_user_information">Get user information</string>
-    <string name="please_enter_your_first_and_last_name">Please enter your first and last name. This information is visible to users in the chats you have added.</string>
+    <string name="please_enter_your_first_and_last_name">Please enter your first and last name.</string>
     <string name="first_name_necessarily">First name (necessarily)</string>
     <string name="last_name_not_necessary">Last name (not necessary)</string>
     <string name="write_your_first_name">Please write your first name!</string>
     <string name="choose_an_image_for_your_profile">Choose an image for your profile</string>
-    <string name="the_image_you_add_will_be_visible_to_users_in_the_chats_you_add">The image you add will be visible to users in the chats you add.</string>
     <string name="choose_image">Choose image</string>
     <string name="go_chat">Go chat</string>
     <string name="data_seved">Data saved!</string>
@@ -50,4 +48,6 @@
     <string name="no_such_country_code">No such country code found</string>
     <string name="search">Search</string>
     <string name="loading">Loading...</string>
+    <string name="enter_code">Enter code</string>
+    <string name="we_will_send_the_code_to">We will send the code to</string>
 </resources>

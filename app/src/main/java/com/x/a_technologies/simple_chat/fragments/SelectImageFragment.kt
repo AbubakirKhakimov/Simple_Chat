@@ -21,19 +21,23 @@ import com.x.a_technologies.simple_chat.database.UserData
 import com.x.a_technologies.simple_chat.databinding.FragmentSelectImageBinding
 import com.x.a_technologies.simple_chat.models.viewModels.MainViewModel
 import com.x.a_technologies.simple_chat.models.User
+import com.x.a_technologies.simple_chat.utils.LoadingDialogManager
 import java.io.ByteArrayOutputStream
 
 class SelectImageFragment : Fragment() {
 
-    lateinit var binding: FragmentSelectImageBinding
-    lateinit var viewModel: MainViewModel
+    private lateinit var binding: FragmentSelectImageBinding
+    private lateinit var viewModel: MainViewModel
+    private lateinit var loadingDialogManager: LoadingDialogManager
+    private var imageSelected = false
 
-    lateinit var firstName:String
-    lateinit var lastName:String
+    private lateinit var firstName:String
+    private lateinit var lastName:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        loadingDialogManager = LoadingDialogManager(requireActivity())
 
         firstName = arguments?.getString("firstName")!!
         lastName = arguments?.getString("lastName")!!
@@ -58,10 +62,10 @@ class SelectImageFragment : Fragment() {
         binding.nextButton.setOnClickListener {
             isLoading(true)
 
-            if (binding.circleImageView.drawable == null){
-                writeUserData(null)
-            }else{
+            if (imageSelected){
                 writeImageDatabase()
+            }else{
+                writeUserData(null)
             }
         }
 
@@ -84,6 +88,7 @@ class SelectImageFragment : Fragment() {
             DatabaseRef.usersRef.child(Firebase.auth.currentUser!!.phoneNumber!!),
             user
         ).observe(viewLifecycleOwner){
+            isLoading(false)
             Toast.makeText(requireActivity(), getString(R.string.data_seved), Toast.LENGTH_SHORT).show()
             UserData.currentUser = user
 
@@ -105,9 +110,8 @@ class SelectImageFragment : Fragment() {
 
     private val imageChooser = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         if (uri != null){
-            binding.animationView.pauseAnimation()
-            binding.animationView.visibility = View.INVISIBLE
             Glide.with(requireActivity()).load(uri).into(binding.circleImageView)
+            imageSelected = true
         }
     }
 
@@ -117,13 +121,9 @@ class SelectImageFragment : Fragment() {
 
     private fun isLoading(bool:Boolean){
         if (bool){
-            binding.nextButton.visibility = View.INVISIBLE
-            binding.progressBar.visibility = View.VISIBLE
-            binding.chooseImage.isClickable = false
+            loadingDialogManager.showDialog()
         }else{
-            binding.nextButton.visibility = View.VISIBLE
-            binding.progressBar.visibility = View.INVISIBLE
-            binding.chooseImage.isClickable = true
+            loadingDialogManager.dismissDialog()
         }
     }
 

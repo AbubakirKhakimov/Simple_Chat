@@ -14,15 +14,13 @@
     <string name="successfulAuthorized">Успешно авторизованы!</string>
     <string name="validPhoneNumber">Пожалуйста, введите действующий телефонный номер!</string>
     <string name="phone_check">Проверка номера телефона</string>
-    <string name="you_will_receive_an_sms_at_the_number">На следующий номер придет SMS. Введите сюда код, полученный в СМС</string>
     <string name="invalidCode">Неверный код, попробуйте еще раз!</string>
     <string name="get_user_information">Получить информацию о пользователе</string>
-    <string name="please_enter_your_first_and_last_name">Пожалуйста, введите свое имя и фамилию. Эта информация видна пользователям в чатах, которые вы добавили.</string>
+    <string name="please_enter_your_first_and_last_name">Пожалуйста, введите свое имя и фамилию.</string>
     <string name="first_name_necessarily">Имя (обязательно)</string>
     <string name="last_name_not_necessary">Фамилия (не обязательно)</string>
     <string name="write_your_first_name">Пожалуйста, напишите свое имя!</string>
     <string name="choose_an_image_for_your_profile">Выберите изображение для своего профиля</string>
-    <string name="the_image_you_add_will_be_visible_to_users_in_the_chats_you_add">Добавленное вами изображение будет видно пользователям в добавленных вами чатах.</string>
     <string name="choose_image">Выбрать изображение</string>
     <string name="go_chat">Перейти в чат</string>
     <string name="data_seved">Данные сохранены!</string>

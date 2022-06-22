@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
@@ -55,84 +55,80 @@
                 <ProgressBar
                     android:id="@+id/progressBar"
                     android:layout_width="30dp"
-                    android:visibility="gone"
                     android:layout_height="30dp"
-                    android:indeterminateTint="@color/white" />
+                    android:indeterminateTint="@color/white"
+                    android:visibility="gone" />
 
             </FrameLayout>
 
         </LinearLayout>
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/circleImageView"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="32dp"
-            android:src="@drawable/user_profile" />
-
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/chooseImage"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/main_color"
-            android:gravity="center"
-            android:text="@string/choose_image"
-            android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:layout_marginTop="32dp">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/firstNameCard"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/circleImageView"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:src="@drawable/user_profile" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/chooseImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
+                android:layout_marginBottom="4dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="0dp"
+                app:contentPadding="8dp">
+
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_baseline_edit_24"
+                    app:tint="@color/main_color" />
+
+            </androidx.cardview.widget.CardView>
+
+        </FrameLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="32dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="4dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:contentPadding="20dp">
+            android:layout_marginEnd="16dp"
+            android:hint="@string/first_name_necessarily">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/firstName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:hint="@string/first_name_necessarily"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:layout_height="wrap_content" />
 
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/lastNameCard"
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="32dp"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="4dp"
-            app:contentPadding="20dp">
+            android:layout_margin="16dp"
+            android:hint="@string/last_name_not_necessary">
 
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/lastName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:hint="@string/last_name_not_necessary"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:layout_height="wrap_content" />
 
-        </androidx.cardview.widget.CardView>
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
-</androidx.core.widget.NestedScrollView>
+</ScrollView>

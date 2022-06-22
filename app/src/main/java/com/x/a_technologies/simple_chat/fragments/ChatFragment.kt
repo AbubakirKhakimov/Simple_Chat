@@ -61,6 +61,7 @@ class ChatFragment : Fragment() {
         if (trackerEventListener == null) {
             initChatTracker()
         }
+        initTrackerObservers()
 
         binding.sendButton.setOnClickListener {
             if (binding.message.text.toString().isEmpty()){
@@ -74,17 +75,14 @@ class ChatFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        viewModel.errorData.observe(viewLifecycleOwner){
-            Toast.makeText(requireActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show()
-            binding.progressBar.visibility = View.GONE
-        }
-
     }
 
     private fun initChatTracker(){
         binding.progressBar.visibility = View.VISIBLE
         trackerEventListener = viewModel.initChatTracker(currentChatInfo.chatId)
+    }
 
+    private fun initTrackerObservers(){
         viewModel.chatTracker.observe(viewLifecycleOwner){
             messagesList.apply {
                 clear()
@@ -93,6 +91,11 @@ class ChatFragment : Fragment() {
 
             chatAdapter.notifyDataSetChanged()
             binding.recyclerView.scrollToPosition(messagesList.size-1)
+            binding.progressBar.visibility = View.GONE
+        }
+
+        viewModel.errorData.observe(viewLifecycleOwner){
+            Toast.makeText(requireActivity(), getString(R.string.error), Toast.LENGTH_SHORT).show()
             binding.progressBar.visibility = View.GONE
         }
     }
