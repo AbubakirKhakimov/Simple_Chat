@@ -27,6 +27,7 @@ class ContactManager(private val context: Context) {
 
         contacts.close()
         return list
+
     }
 
 }
