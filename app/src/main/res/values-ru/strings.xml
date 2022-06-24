@@ -40,4 +40,14 @@
     <string name="this_number_is_in_your_chat_list">Этот номер есть в вашем списке чатов!</string>
     <string name="number_is_not_registered">Этот номер не зарегистрирован!</string>
     <string name="advice_add_chat">У вас еще нет чатов. Чтобы добавить новый чат, нажмите кнопку (+) ниже и введите номер телефона вашего собеседника.</string>
+    <string name="new_message">Новое сообщение</string>
+    <string name="invite">Приглашать</string>
+    <string name="cancel">Отмена</string>
+    <string name="invite_sms_text">Здравствуйте, я использую \"Simple chat\" для текстовых сообщений. Присоединяйтесь сейчас! Вы можете скачать это здесь:</string>
+    <string name="choose_a_country">Выберите страну</string>
+    <string name="no_such_country_code">Такой код страны не найден</string>
+    <string name="search">Поиск</string>
+    <string name="loading">Загрузка…</string>
+    <string name="enter_code">Введите код</string>
+    <string name="we_will_send_the_code_to">Мы отправим код на</string>
 </resources>

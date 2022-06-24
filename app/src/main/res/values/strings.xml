@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Simple chat</string>
+    <string name="app_name">Simple chat</string>
     <string name="title_activity_maps" translatable="false">MapsActivity</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
@@ -47,7 +47,7 @@
     <string name="choose_a_country">Choose a country</string>
     <string name="no_such_country_code">No such country code found</string>
     <string name="search">Search</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
     <string name="enter_code">Enter code</string>
     <string name="we_will_send_the_code_to">We will send the code to</string>
 </resources>

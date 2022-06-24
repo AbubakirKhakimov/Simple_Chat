@@ -40,4 +40,14 @@
     <string name="this_number_is_in_your_chat_list">Bu raqam chatlar roʻyxatida bor!</string>
     <string name="number_is_not_registered">Bu raqam ro\'yxatdan o\'tmagan!</string>
     <string name="advice_add_chat">Xozircha sizda chatlar yo\'q. Yangi chat qo\'shish uchun pastdagi ( + ) tugmasini bosing va suxbatdoshingizni telefon raqamini kiriting.</string>
+    <string name="new_message">Yangi xabar</string>
+    <string name="invite">Taklif qiling</string>
+    <string name="cancel">Bekor qilish</string>
+    <string name="invite_sms_text">Salom, men xabar yuborish uchun \"Simple chat\" dan foydalanaman. Hoziroq qo\'shiling! Siz uni bu yerdan yuklab olishingiz mumkin:</string>
+    <string name="choose_a_country">Mamlakatni tanlang</string>
+    <string name="no_such_country_code">Bunday mamlakat kodi topilmadi</string>
+    <string name="search">Qidirish</string>
+    <string name="loading">Yuklanmoqda…</string>
+    <string name="enter_code">Kodni kiriting</string>
+    <string name="we_will_send_the_code_to">Biz kodni manashu raqamga yuboramiz</string>
 </resources>
