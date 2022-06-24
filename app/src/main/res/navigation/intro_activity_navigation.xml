@@ -35,7 +35,11 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_authorizationFragment_to_selectCountryCodeFragment"
-            app:destination="@id/selectCountryCodeFragment" />
+            app:destination="@id/selectCountryCodeFragment"
+            app:enterAnim="@anim/slide_in_left"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_right"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/verificationCodeFragment"

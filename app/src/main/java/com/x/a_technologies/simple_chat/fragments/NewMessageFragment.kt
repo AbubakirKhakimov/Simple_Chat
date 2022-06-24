@@ -1,6 +1,7 @@
 package com.x.a_technologies.simple_chat.fragments
 
 import android.app.AlertDialog
+import android.app.Application
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -105,7 +106,7 @@ class NewMessageFragment: Fragment(), ContactsListAdapterCallBack {
         withContext(Dispatchers.IO) {
             contactsList.apply {
                 clear()
-                addAll(ContactManager(requireActivity()).readPhoneContacts())
+                addAll(ContactManager(requireContext()).readPhoneContacts())
             }
         }
 
